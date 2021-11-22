@@ -14,6 +14,7 @@ using v8::SealHandleScope;
 
 namespace node {
 
+// This actually starts the event loop, it will call uv_run()
 Maybe<int> SpinEventLoop(Environment* env) {
   CHECK_NOT_NULL(env);
   MultiIsolatePlatform* platform = GetMultiIsolatePlatform(env);
@@ -33,6 +34,8 @@ Maybe<int> SpinEventLoop(Environment* env) {
         node::performance::NODE_PERFORMANCE_MILESTONE_LOOP_START);
     do {
       if (env->is_stopping()) break;
+
+      // Here we start call uv to start it
       uv_run(env->event_loop(), UV_RUN_DEFAULT);
       if (env->is_stopping()) break;
 

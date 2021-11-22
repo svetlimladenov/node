@@ -124,12 +124,17 @@ NodeMainInstance::~NodeMainInstance() {
   isolate_->Dispose();
 }
 
+
+//HERE
 int NodeMainInstance::Run(const EnvSerializeInfo* env_info) {
   Locker locker(isolate_);
   Isolate::Scope isolate_scope(isolate_);
   HandleScope handle_scope(isolate_);
 
   int exit_code = 0;
+
+  // We create the eviromnent here, then 
+
   DeleteFnPtr<Environment, FreeEnvironment> env =
       CreateMainEnvironment(&exit_code, env_info);
   CHECK_NOT_NULL(env);
@@ -139,10 +144,13 @@ int NodeMainInstance::Run(const EnvSerializeInfo* env_info) {
   return exit_code;
 }
 
+// HERE
 void NodeMainInstance::Run(int* exit_code, Environment* env) {
-  if (*exit_code == 0) {
+  if (*exit_code == 0) { // usually != 0 means there is an error , so we will not take a look what is happening 
+    // Load the env for execution and run code inside of it.
     LoadEnvironment(env, StartExecutionCallback{});
 
+    // Start running the event loop ? Probabaly the enviroment holds reference or pointer to the uv_default_loop instance
     *exit_code = SpinEventLoop(env).FromMaybe(1);
   }
 

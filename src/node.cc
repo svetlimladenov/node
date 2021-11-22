@@ -452,6 +452,7 @@ MaybeLocal<Value> StartExecution(Environment* env, const char* main_script_id) {
       ExecuteBootstrapper(env, main_script_id, &parameters, &arguments));
 }
 
+// HERE ?
 MaybeLocal<Value> StartExecution(Environment* env, StartExecutionCallback cb) {
   InternalCallbackScope callback_scope(
       env,
@@ -953,6 +954,7 @@ InitializationResult InitializeOncePerProcess(int argc, char** argv) {
   return InitializeOncePerProcess(argc, argv, kDefaultInitialization);
 }
 
+// Parse  the CLI arguments, Initialize the V8 Platform
 InitializationResult InitializeOncePerProcess(
   int argc,
   char** argv,
@@ -1116,12 +1118,14 @@ void TearDownOncePerProcess() {
 }
 
 int Start(int argc, char** argv) {
+  // Handles configuratiom given via env vars or CLI params lie --abort-on-caught-exception, and Initialize V8
   InitializationResult result = InitializeOncePerProcess(argc, argv);
   if (result.early_return) {
     return result.exit_code;
   }
 
   {
+    // Isolate - part of V8
     Isolate::CreateParams params;
     const std::vector<size_t>* indices = nullptr;
     const EnvSerializeInfo* env_info = nullptr;
@@ -1143,6 +1147,9 @@ int Start(int argc, char** argv) {
                                    result.args,
                                    result.exec_args,
                                    indices);
+
+
+    // Here we run, we have a V8, and we have a event-loop - node_main_instance.cc
     result.exit_code = main_instance.Run(env_info);
   }
 
