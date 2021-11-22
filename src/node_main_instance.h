@@ -18,7 +18,7 @@ struct EnvSerializeInfo;
 
 // TODO(joyeecheung): align this with the Worker/WorkerThreadData class.
 // We may be able to create an abstract class to reuse some of the routines.
-class Run {
+class NodeMainInstance {
  public:
   // To create a main instance that does not own the isolate,
   // The caller needs to do:
